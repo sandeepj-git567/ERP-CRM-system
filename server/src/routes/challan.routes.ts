@@ -16,8 +16,9 @@ router.use(authenticate);
 router.get('/', getChallans);
 router.post('/', authorize('ADMIN', 'SALES'), createChallan);
 router.get('/:id', getChallan);
-router.put('/:id', authorize('ADMIN', 'SALES'), updateChallan);
 router.post('/:id/confirm', authorize('ADMIN', 'SALES'), confirmChallan);
+router.patch('/:id/confirm', authorize('ADMIN', 'SALES'), confirmChallan);
 router.post('/:id/cancel', authorize('ADMIN', 'SALES'), cancelChallan);
+router.patch('/:id/cancel', authorize('ADMIN', 'SALES'), cancelChallan);
 
 export default router;
