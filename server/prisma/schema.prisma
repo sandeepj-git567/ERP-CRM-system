@@ -1,0 +1,173 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Models
+// ─────────────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("SALES")
+  bio          String?
+  phone        String?
+  department   String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  followUps      CustomerFollowUp[]
+  stockMovements StockMovement[]
+  challans       SalesChallan[]
+
+  @@map("users")
+}
+
+model Customer {
+  id           String         @id @default(cuid())
+  customerName String
+  mobileNumber String
+  email        String?
+  businessName String
+  gstNumber    String?
+  customerType String   @default("RETAIL")
+  address      String?
+  status       String   @default("LEAD")
+  followUpDate DateTime?
+  notes        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  // Relations
+  followUps CustomerFollowUp[]
+  challans  SalesChallan[]
+
+  @@index([customerName])
+  @@index([status])
+  @@index([customerType])
+  @@map("customers")
+}
+
+model CustomerFollowUp {
+  id           String   @id @default(cuid())
+  customerId   String
+  note         String
+  followUpDate DateTime
+  createdById  String
+  createdAt    DateTime @default(now())
+
+  // Relations
+  customer  Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdBy User     @relation(fields: [createdById], references: [id])
+
+  @@index([customerId])
+  @@index([followUpDate])
+  @@map("customer_follow_ups")
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  productName       String
+  sku               String   @unique
+  category          String
+  unitPrice         Float
+  currentStock      Int      @default(0)
+  minimumStock      Int      @default(0)
+  warehouseLocation String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  stockMovements StockMovement[]
+  challanItems   SalesChallanItem[]
+
+  @@index([sku])
+  @@index([category])
+  @@map("products")
+}
+
+model StockMovement {
+  id           String       @id @default(cuid())
+  productId    String
+  quantity     Int
+  movementType String
+  reason       String
+  createdById  String
+  createdAt    DateTime     @default(now())
+
+  // Relations
+  product   Product @relation(fields: [productId], references: [id])
+  createdBy User    @relation(fields: [createdById], references: [id])
+
+  @@index([productId])
+  @@index([createdAt])
+  @@map("stock_movements")
+}
+
+model SalesChallan {
+  id            String        @id @default(cuid())
+  challanNumber String        @unique
+  customerId    String
+  totalQuantity Int           @default(0)
+  totalAmount   Float         @default(0)
+  status        String        @default("DRAFT")
+  notes         String?
+  createdById   String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  customer  Customer           @relation(fields: [customerId], references: [id])
+  createdBy User               @relation(fields: [createdById], references: [id])
+  items     SalesChallanItem[]
+
+  @@index([challanNumber])
+  @@index([status])
+  @@index([customerId])
+  @@index([createdAt])
+  @@map("sales_challans")
+}
+
+model SalesChallanItem {
+  id                  String  @id @default(cuid())
+  challanId           String
+  productId           String
+  productNameSnapshot String
+  skuSnapshot         String
+  unitPriceSnapshot   Float
+  quantity            Int
+  subtotal            Float
+
+  // Relations
+  challan  SalesChallan @relation(fields: [challanId], references: [id], onDelete: Cascade)
+  product  Product      @relation(fields: [productId], references: [id])
+
+  @@index([challanId])
+  @@map("sales_challan_items")
+}
+
+// Counter table for auto-incrementing challan numbers per year
+model ChallanCounter {
+  id        String   @id @default(cuid())
+  year      Int      @unique
+  counter   Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@map("challan_counters")
+}

@@ -1,0 +1,227 @@
+{
+  "info": {
+    "name": "DistribuERP Operations Portal API",
+    "_postman_id": "erp-crm-operations-portal-v1",
+    "description": "Comprehensive Postman collection for Mini ERP + CRM Operations Portal covering Authentication, Role Management, Customers & CRM Follow-ups, Products & Stock Movements, Sales Challans, Reports, and Real-time WebSocket broadcasting.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth & Roles",
+      "item": [
+        {
+          "name": "Login (Admin / Sales / Warehouse / Accounts)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Register / Sign Up New Staff with Role & Bio",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Suresh Patil\",\n  \"email\": \"suresh.sales@example.com\",\n  \"password\": \"Password@123\",\n  \"role\": \"SALES\",\n  \"phone\": \"+91 98200 11223\",\n  \"department\": \"Western Maharashtra - Pune & Satara\",\n  \"bio\": \"Wholesale & retail distribution accounts executive.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+          }
+        },
+        {
+          "name": "Get Current User Profile (/me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        },
+        {
+          "name": "Update Profile & Bio (/profile)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Suresh Patil\",\n  \"phone\": \"+91 98200 99887\",\n  \"department\": \"Maharashtra North & Central Territory\",\n  \"bio\": \"Senior field CRM lead and distributor account specialist.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/profile", "host": ["{{baseUrl}}"], "path": ["auth", "profile"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers & CRM",
+      "item": [
+        {
+          "name": "List Customers (Paginated, Search & Filter)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/customers?page=1&limit=10&search=&status=&type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "" },
+                { "key": "status", "value": "" },
+                { "key": "type", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Vikram Sharma\",\n  \"mobileNumber\": \"9876543210\",\n  \"email\": \"vikram@apexretail.in\",\n  \"businessName\": \"Apex Wholesale Mart\",\n  \"gstNumber\": \"27AABCU9603R1ZN\",\n  \"customerType\": \"WHOLESALE\",\n  \"address\": \"Shop 14, APMC Market, Vashi, Navi Mumbai\",\n  \"status\": \"ACTIVE\",\n  \"notes\": \"Key wholesale distributor for FMCG and electronics.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/customers", "host": ["{{baseUrl}}"], "path": ["customers"] }
+          }
+        },
+        {
+          "name": "Add Follow-Up Note to Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Discussed bulk order terms for Q3 inventory dispatch. Customer requested 500 units.\",\n  \"followUpDate\": \"2026-08-15T10:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}/follow-ups",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", "{{customerId}}", "follow-ups"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products & Inventory",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/products?page=1&limit=20", "host": ["{{baseUrl}}"], "path": ["products"] }
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productName\": \"UltraClean Industrial Sanitizer 5L\",\n  \"sku\": \"SAN-IND-5L\",\n  \"category\": \"Chemicals & Sanitizers\",\n  \"unitPrice\": 450.00,\n  \"currentStock\": 250,\n  \"minimumStock\": 30,\n  \"warehouseLocation\": \"Bhiwandi Logistics Hub - Dock B\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/products", "host": ["{{baseUrl}}"], "path": ["products"] }
+          }
+        },
+        {
+          "name": "Log Stock Movement (IN / OUT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 50,\n  \"movementType\": \"IN\",\n  \"reason\": \"Received supplier purchase shipment PO-2026-881\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}/stock",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}", "stock"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sales Challans & Dispatch",
+      "item": [
+        {
+          "name": "List Sales Challans",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/challans?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["challans"] }
+          }
+        },
+        {
+          "name": "Create Sales Challan (Auto-number & Snapshot)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"notes\": \"Priority delivery via road transport.\",\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 10\n    }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/challans", "host": ["{{baseUrl}}"], "path": ["challans"] }
+          }
+        },
+        {
+          "name": "Confirm Challan (Atomic Stock Deduction & Notification Trigger)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/challans/{{challanId}}/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["challans", "{{challanId}}", "confirm"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard & Metrics",
+      "item": [
+        {
+          "name": "Get Live Operations Dashboard KPIs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/dashboard/stats", "host": ["{{baseUrl}}"], "path": ["dashboard", "stats"] }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "token", "value": "" },
+    { "key": "customerId", "value": "" },
+    { "key": "productId", "value": "" },
+    { "key": "challanId", "value": "" }
+  ]
+}
