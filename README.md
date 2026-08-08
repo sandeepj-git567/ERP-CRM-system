@@ -1,9 +1,16 @@
 # DistribuERP - Mini ERP + CRM Operations Portal
 
 > **Full Stack Developer Case Study**: Mini ERP + CRM Operations Portal for Wholesale and Distribution Operations.  
-> **Tech Stack**: Node.js, TypeScript, Express, Prisma ORM, PostgreSQL (Supabase), React, Vite, TailwindCSS, Socket.IO WebSockets.
+> **Tech Stack**: Node.js, TypeScript, Express, Prisma ORM, PostgreSQL (Supabase), React, Vite, TailwindCSS, Socket.IO WebSockets.  
+> 🎥 **Full Flow Video Demonstration**: [Watch on Loom](https://www.loom.com/share/96916c5f53bf408e80febd5ea6a786d1)
 
 ---
+
+## 🎥 Live Demonstration & Video Walkthrough
+
+- **Loom Recording**: [https://www.loom.com/share/96916c5f53bf408e80febd5ea6a786d1](https://www.loom.com/share/96916c5f53bf408e80febd5ea6a786d1)
+- **GitHub Repository**: [https://github.com/sandeepj-git567/ERP-CRM-system](https://github.com/sandeepj-git567/ERP-CRM-system)
+- **Postman Collection**: [`postman_collection.json`](https://github.com/sandeepj-git567/ERP-CRM-system/blob/main/postman_collection.json)
 
 ## 🌟 Executive Summary & Architecture Overview
 
