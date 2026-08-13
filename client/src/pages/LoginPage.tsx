@@ -31,12 +31,6 @@ const signupSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 type SignupFormData = z.infer<typeof signupSchema>;
 
-const DEMO_CREDENTIALS = [
-  { role: 'Admin', email: 'admin@example.com', password: 'Admin@123', color: 'text-purple-400' },
-  { role: 'Sales', email: 'sales@example.com', password: 'Sales@123', color: 'text-blue-400' },
-  { role: 'Warehouse', email: 'warehouse@example.com', password: 'Warehouse@123', color: 'text-yellow-400' },
-  { role: 'Accounts', email: 'accounts@example.com', password: 'Accounts@123', color: 'text-emerald-400' },
-];
 
 const ROLE_OPTIONS: Array<{
   role: Role;
@@ -100,7 +94,6 @@ export function LoginPage() {
   const {
     register: registerLogin,
     handleSubmit: handleLoginSubmit,
-    setValue: setLoginValue,
     formState: { errors: loginErrors, isSubmitting: isLoginSubmitting },
   } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
 
@@ -143,11 +136,6 @@ export function LoginPage() {
     }
   };
 
-  const fillCredentials = (email: string, password: string) => {
-    setTab('signin');
-    setLoginValue('email', email);
-    setLoginValue('password', password);
-  };
 
   return (
     <div className="min-h-screen bg-[#0f172a] flex">
@@ -285,25 +273,7 @@ export function LoginPage() {
                   </button>
                 </form>
 
-                {/* Demo quick credentials */}
-                <div className="pt-4 border-t border-slate-700/60">
-                  <p className="text-xs text-slate-500 font-semibold mb-2.5 uppercase tracking-wider">
-                    Instant Demo Login (Click to Fill):
-                  </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {DEMO_CREDENTIALS.map((cred) => (
-                      <button
-                        key={cred.role}
-                        type="button"
-                        onClick={() => fillCredentials(cred.email, cred.password)}
-                        className="text-left p-2.5 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-slate-500 transition-colors"
-                      >
-                        <p className={`text-xs font-semibold ${cred.color}`}>{cred.role}</p>
-                        <p className="text-[11px] text-slate-400 truncate">{cred.email}</p>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+
               </div>
             )}
 
