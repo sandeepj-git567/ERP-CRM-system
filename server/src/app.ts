@@ -80,12 +80,16 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), env: config.nodeEnv });
 });
 
-// ─── API Routes ───────────────────────────────────────────────────────────────
-app.use('/api/auth', loginLimiter, authRoutes);
-app.use('/api/customers', customerRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/challans', challanRoutes);
-app.use('/api/dashboard', dashboardRoutes);
+// ─── API Routes (Dual mounted for standalone Express & Vercel Serverless) ─────
+const apiRouter = express.Router();
+apiRouter.use('/auth', loginLimiter, authRoutes);
+apiRouter.use('/customers', customerRoutes);
+apiRouter.use('/products', productRoutes);
+apiRouter.use('/challans', challanRoutes);
+apiRouter.use('/dashboard', dashboardRoutes);
+
+app.use('/api', apiRouter);
+app.use(apiRouter);
 
 // ─── 404 Handler ─────────────────────────────────────────────────────────────
 app.use((_req, res) => {
