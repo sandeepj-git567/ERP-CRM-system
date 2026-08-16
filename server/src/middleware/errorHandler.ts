@@ -61,13 +61,21 @@ export function errorHandler(
       });
       return;
     }
+  if (err instanceof Prisma.PrismaClientInitializationError) {
+    res.status(500).json({
+      success: false,
+      message: `Database connection error: ${err.message}`,
+      code: 'DATABASE_CONNECTION_ERROR',
+    });
+    return;
   }
 
   // Unexpected errors
   console.error('Unhandled error:', err);
+  const errorMessage = err instanceof Error ? err.message : String(err);
   res.status(500).json({
     success: false,
-    message: config.isProduction ? 'Internal server error' : String(err),
+    message: errorMessage || 'Internal server error',
     code: 'INTERNAL_ERROR',
   });
 }
