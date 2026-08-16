@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
   Eye, EyeOff, TrendingUp, Loader2, LogIn, UserPlus,
-  Shield, Users, Warehouse, Landmark
+  Shield, Users, Warehouse, Landmark, Sparkles, Key
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../lib/auth-context';
@@ -94,6 +94,7 @@ export function LoginPage() {
   const {
     register: registerLogin,
     handleSubmit: handleLoginSubmit,
+    setValue: setLoginValue,
     formState: { errors: loginErrors, isSubmitting: isLoginSubmitting },
   } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
 
@@ -273,7 +274,78 @@ export function LoginPage() {
                   </button>
                 </form>
 
+                {/* Quick Demo Logins */}
+                <div className="pt-4 border-t border-slate-700/60">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                      1-Click Demo Logins
+                    </span>
+                    <span className="text-[10px] text-slate-400">Click to instantly sign in</span>
+                  </div>
 
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      {
+                        role: 'Admin',
+                        email: 'admin@example.com',
+                        password: 'Admin@123',
+                        icon: Shield,
+                        badgeColor: 'border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 hover:border-purple-500/60',
+                        iconColor: 'text-purple-400',
+                      },
+                      {
+                        role: 'Sales',
+                        email: 'sales@example.com',
+                        password: 'Sales@123',
+                        icon: Users,
+                        badgeColor: 'border-blue-500/30 bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 hover:border-blue-500/60',
+                        iconColor: 'text-blue-400',
+                      },
+                      {
+                        role: 'Warehouse',
+                        email: 'warehouse@example.com',
+                        password: 'Warehouse@123',
+                        icon: Warehouse,
+                        badgeColor: 'border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 hover:border-amber-500/60',
+                        iconColor: 'text-amber-400',
+                      },
+                      {
+                        role: 'Accounts',
+                        email: 'accounts@example.com',
+                        password: 'Accounts@123',
+                        icon: Landmark,
+                        badgeColor: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/60',
+                        iconColor: 'text-emerald-400',
+                      },
+                    ].map((demo) => {
+                      const Icon = demo.icon;
+                      return (
+                        <button
+                          key={demo.role}
+                          type="button"
+                          disabled={isLoginSubmitting}
+                          onClick={() => {
+                            setLoginValue('email', demo.email, { shouldValidate: true });
+                            setLoginValue('password', demo.password, { shouldValidate: true });
+                            onLogin({ email: demo.email, password: demo.password });
+                          }}
+                          className={`p-2.5 rounded-lg border text-left transition-all duration-150 flex items-center justify-between group ${demo.badgeColor}`}
+                          title={`Sign in as ${demo.role} (${demo.email})`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <Icon className={`w-4 h-4 ${demo.iconColor}`} />
+                            <div>
+                              <div className="text-xs font-semibold">{demo.role}</div>
+                              <div className="text-[10px] text-slate-400">{demo.email}</div>
+                            </div>
+                          </div>
+                          <Key className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 transition-opacity" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             )}
 

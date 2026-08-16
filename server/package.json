@@ -11,6 +11,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:prod": "prisma migrate deploy",
     "prisma:seed": "ts-node prisma/seed.ts",
+    "prisma:seed:logins": "ts-node prisma/seed-logins.ts",
+    "seed:logins": "ts-node prisma/seed-logins.ts",
     "prisma:studio": "prisma studio",
     "test": "jest --runInBand --forceExit",
     "test:watch": "jest --watch"

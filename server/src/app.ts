@@ -57,7 +57,25 @@ app.use('/api', apiLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// ─── Health Check ─────────────────────────────────────────────────────────────
+// ─── Health Check & Root ──────────────────────────────────────────────────────
+app.get('/', (_req, res) => {
+  res.json({
+    status: 'ok',
+    name: 'DistribuERP API Server',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    env: config.nodeEnv,
+    endpoints: {
+      health: '/health',
+      auth: '/api/auth',
+      customers: '/api/customers',
+      products: '/api/products',
+      challans: '/api/challans',
+      dashboard: '/api/dashboard',
+    },
+  });
+});
+
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), env: config.nodeEnv });
 });
