@@ -61,6 +61,8 @@ export function errorHandler(
       });
       return;
     }
+  }
+
   if (err instanceof Prisma.PrismaClientInitializationError) {
     res.status(500).json({
       success: false,

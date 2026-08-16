@@ -103,7 +103,17 @@ export async function createProductService(data: z.infer<typeof createProductSch
     throw new AppError(`Product with SKU "${data.sku}" already exists.`, 409, 'DUPLICATE_SKU');
   }
 
-  const product = await prisma.product.create({ data: { ...data } });
+  const product = await prisma.product.create({
+    data: {
+      productName: data.productName,
+      sku: data.sku,
+      category: data.category,
+      unitPrice: data.unitPrice,
+      currentStock: data.currentStock ?? 0,
+      minimumStock: data.minimumStock ?? 0,
+      warehouseLocation: data.warehouseLocation ?? null,
+    },
+  });
 
   // Real-time broadcast
   emitRealtimeEvent({
