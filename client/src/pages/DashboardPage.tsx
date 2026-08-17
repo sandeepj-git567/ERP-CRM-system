@@ -55,7 +55,7 @@ const statusColors: Record<string, string> = {
 };
 
 export function DashboardPage() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['dashboard'],
     queryFn: dashboardService.get,
     refetchInterval: 60000,
@@ -77,7 +77,17 @@ export function DashboardPage() {
     );
   }
 
-  const { stats, recentChallans, recentMovements, upcomingFollowUps } = data!;
+  if (isError || !data) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-slate-400 animate-fade-in">
+        <AlertTriangle className="w-12 h-12 text-red-400 mb-4" />
+        <p className="text-lg">Failed to load dashboard data.</p>
+        <p className="text-sm mt-2">Please check your connection and try again.</p>
+      </div>
+    );
+  }
+
+  const { stats, recentChallans, recentMovements, upcomingFollowUps } = data;
 
   return (
     <div className="space-y-6 animate-fade-in">
