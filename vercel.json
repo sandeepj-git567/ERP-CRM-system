@@ -1,8 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "cd server && npm install && npx prisma generate && cd ../client && npm install && npm run build",
+  "buildCommand": "npm install && npx prisma generate --schema=./server/prisma/schema.prisma && cd client && npm install && npm run build",
   "outputDirectory": "client/dist",
-  "framework": "vite",
   "rewrites": [
     {
       "source": "/api/(.*)",
