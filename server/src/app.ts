@@ -19,8 +19,10 @@ import { initSocketServer } from './lib/socket';
 const app = express();
 const httpServer = http.createServer(app);
 
-// Initialize Socket.IO server
-initSocketServer(httpServer);
+// Initialize Socket.IO server (skipped in Vercel serverless environment)
+if (process.env.VERCEL !== '1') {
+  initSocketServer(httpServer);
+}
 
 // ─── Security Middleware ──────────────────────────────────────────────────────
 app.set('trust proxy', 1);
