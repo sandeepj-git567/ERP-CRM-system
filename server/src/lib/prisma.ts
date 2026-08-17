@@ -5,13 +5,12 @@ declare global {
   var __prisma: PrismaClient | undefined;
 }
 
-// Set DATABASE_URL here at module level so it is defined BEFORE PrismaClient
-// is created, regardless of import hoisting in the calling module.
-// pgbouncer=true disables prepared statements (required for PgBouncer transaction mode)
-// connection_limit=1 is required for serverless environments
+// Session mode pooler (port 5432) is the correct choice for Prisma/ORMs.
+// Unlike transaction mode (port 6543 + pgbouncer=true), session mode preserves
+// connection state so prepared statements never conflict (no 42P05 errors).
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL =
-    'postgresql://postgres.vqxgcevxxetjftgnsrxa:%40Sandeepj9660@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1';
+    'postgresql://postgres.vqxgcevxxetjftgnsrxa:%40Sandeepj9660@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?connection_limit=1&connect_timeout=30';
 }
 
 function createPrismaClient() {
