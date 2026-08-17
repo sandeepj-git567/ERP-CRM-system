@@ -5,19 +5,23 @@ declare global {
   var __prisma: PrismaClient | undefined;
 }
 
-// Use pooler URL for Vercel/serverless; fall back to env var for local dev
+// Supabase pooler URL with pgbouncer=true and statement_cache_size=0 to prevent
+// "prepared statement already exists" errors in PgBouncer transaction mode
 const DATABASE_URL =
   process.env.DATABASE_URL ??
-  'postgresql://postgres.vqxgcevxxetjftgnsrxa:%40Sandeepj9660@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1';
+  'postgresql://postgres.vqxgcevxxetjftgnsrxa:%40Sandeepj9660@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1&statement_cache_size=0';
 
-// Prevent multiple instances of Prisma Client in development (hot-reload)
-export const prisma =
-  global.__prisma ??
-  new PrismaClient({
+function createPrismaClient() {
+  return new PrismaClient({
     datasources: { db: { url: DATABASE_URL } },
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });
-
-if (process.env.NODE_ENV !== 'production') {
-  global.__prisma = prisma;
 }
+
+// In development: reuse singleton to avoid too many connections on hot-reload
+// In production (serverless): create a fresh client per invocation
+export const prisma =
+  process.env.NODE_ENV !== 'production'
+    ? (global.__prisma ?? (global.__prisma = createPrismaClient()))
+    : createPrismaClient();
+
